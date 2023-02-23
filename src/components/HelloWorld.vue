@@ -25,7 +25,7 @@ export default defineComponent({
       name: 'Tom',
     })
 
-    const uids: number[] = reactive([1, 2, 3])
+    // const uids: number[] = reactive([1, 2, 3])
     return {
       msg,
       count,
