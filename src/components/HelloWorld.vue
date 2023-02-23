@@ -1,99 +1,43 @@
 <template>
-  <h1>{{ msg }}</h1>
-
-  <ul>
-    <li>
-      Tutorial ☞
-      <a href="https://vue3.chengpeiquan.com/" target="_blank">
-        Learning Vue3
-      </a>
-    </li>
-    <li>
-      Official Website ☞
-      <a href="https://vuejs.org/" target="_blank">Vue3</a>
-      |
-      <a href="https://vitejs.dev/" target="_blank">Vite</a>
-    </li>
-  </ul>
-
-  <hr />
-
-  <p>
-    This is a message from
-    <a href="https://vue3.chengpeiquan.com/pinia.html" target="_blank">Pinia</a
-    >:
-  </p>
-  <blockquote>
-    <p>{{ message }}</p>
-  </blockquote>
-  <button type="button" @click="store.updateMessageSync('New Message')">
-    <span>Update Message</span>
-  </button>
-
-  <hr />
-
-  <ul>
-    <li>
-      Click <router-link to="/foo">Here</router-link> to see a children router.
-    </li>
-    <li>
-      <button type="button" @click="count++">count is: {{ count }}</button>
-    </li>
-    <li>
-      Edit
-      <code>components/HelloWorld.vue</code> to test hot module replacement.
-    </li>
-  </ul>
+  <p class="msg">{{ msg }}</p>
+  <p ref="meesage">测试ref用,ref也可以和Vue2 一致</p>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useMessageStore } from '@/stores'
+<script lang="ts">
+import { defineComponent, reactive, ref } from 'vue'
 
-defineProps<{ msg: string }>()
+export default defineComponent({
+  setup() {
+    const msg = ref<string>('Hello World')
+    // 数值
+    const count = ref<number>(1)
 
-const count = ref<number>(0)
-const store = useMessageStore()
-const { message } = storeToRefs(store)
+    // 布尔值
+    const isVip = ref<boolean>(false)
+
+    interface Member {
+      id: number
+      name: string
+    }
+
+    const userInfo: Member = reactive({
+      id: 1,
+      name: 'Tom',
+    })
+
+    const uids: number[] = reactive([1, 2, 3])
+    return {
+      msg,
+      count,
+      isVip,
+      userInfo,
+    }
+  },
+})
 </script>
 
-<style lang="less" scoped>
-ul {
-  li {
-    line-height: 2;
-  }
-}
-
-blockquote {
-  color: var(--c-black);
-  background-color: var(--c-gray);
-  padding: calc(var(--w-space) / 2);
-  border-radius: var(--w-radius-xs);
-  p {
-    margin: 0;
-  }
-}
-
-hr {
-  width: 60%;
-  border-color: var(--c-border);
-  margin: var(--w-space) auto;
-  opacity: 0.2;
-}
-
-a {
-  color: #42b983;
-}
-
-p {
-  margin: 0;
-}
-
-code {
-  background-color: #eee;
-  padding: 2px 4px;
-  border-radius: 4px;
-  color: #304455;
+<style>
+.msg {
+  font-size: 18px;
 }
 </style>
