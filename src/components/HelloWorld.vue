@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, toRefs } from 'vue'
+import { defineComponent, onMounted, reactive, ref, toRefs, watch } from 'vue'
 interface Member {
   id: number
   name: string
@@ -51,7 +51,7 @@ export default defineComponent({
       age: 18,
       gender: 'male',
     })
-
+    const index = ref<number>(0)
     const userInfoRefs = toRefs(userInfo)
     const uids: number[] = reactive([1, 2, 3])
 
@@ -59,7 +59,10 @@ export default defineComponent({
       userInfo.id = 2
       userInfo.name = 'Tom'
       userInfo.age = 20
+      index.value++
+      msg.value = 'hahahahahhahah'
     }, 2000)
+
     // 模板中使用需要return 页面加载时使用不需要return
     function update() {
       userInfo.id = 3
@@ -70,6 +73,39 @@ export default defineComponent({
     const delayUpdate = () => {
       console.log('init')
     }
+    // 练习watch
+    // 基础用法
+    watch(userInfo, () => {
+      console.log('监听整个 userInfo', userInfo.name)
+    })
+    watch(
+      () => userInfo.name,
+      (newValue, oldValue) => {
+        console.log('只监听 name 的变化', userInfo.name)
+        console.log('打印前后变化的值', { oldValue, newValue })
+      }
+    )
+
+    // 批量用法
+    // 抽离公共处理行为
+    const handleWatch = (
+      newValue: string | number,
+      oldValue: string | number
+    ): void => {
+      console.log(newValue, oldValue)
+    }
+
+    watch(index, handleWatch)
+    watch(msg, handleWatch)
+    watch(
+      // 数据源改成了数组
+      [msg, index],
+      // 回调的入参也变成了数组，每个数组里面的顺序和数据源数组排序一致
+      ([newMessage, newIndex], [oldMessage, oldIndex]) => {
+        console.log('message 的变化', { newMessage, oldMessage })
+        console.log('index 的变化', { newIndex, oldIndex })
+      }
+    )
 
     onMounted(() => {
       delayUpdate()
