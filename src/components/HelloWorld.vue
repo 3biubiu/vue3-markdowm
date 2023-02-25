@@ -26,10 +26,28 @@
 
   <!-- 在这里点击执行 `return` 出来的方法 -->
   <button @click="update">修改MSG</button>
+  <Editor :value="mdValue" @change="handleChange" />
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, toRefs, watch } from 'vue'
+import gfm from '@bytemd/plugin-gfm'
+import { Editor, Viewer } from '@bytemd/vue-next'
+
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  toRefs,
+  watch,
+  computed,
+} from 'vue'
+
+const plugins = [
+  gfm(),
+  // Add more plugins here
+]
+
 interface Member {
   id: number
   name: string
@@ -37,7 +55,11 @@ interface Member {
   gender: string
 }
 export default defineComponent({
+  components: {
+    // Editor,
+  },
   setup() {
+    const mdValue = ref<string>('')
     const msg = ref<string>('Hello World')
     // 数值
     const count = ref<number>(1)
@@ -69,7 +91,9 @@ export default defineComponent({
       userInfo.name = 'Tom3'
       userInfo.age = 21
     }
-
+    function handleChange(v: string) {
+      mdValue.value = v
+    }
     const delayUpdate = () => {
       console.log('init')
     }
@@ -94,7 +118,22 @@ export default defineComponent({
     ): void => {
       console.log(newValue, oldValue)
     }
+    const foo = ref<string>('')
 
+    setTimeout(() => {
+      foo.value = 'Hello World!'
+    }, 2000)
+
+    function bar() {
+      // debugger
+      console.log(foo.value)
+    }
+
+    // 使用 watch 需要先手动执行一次
+    // bar()
+
+    // 然后当 foo 有变动时，才会通过 watch 来执行 bar()
+    watch(foo, bar)
     watch(index, handleWatch)
     watch(msg, handleWatch)
     watch(
@@ -115,7 +154,9 @@ export default defineComponent({
       count,
       isVip,
       userInfo,
+      mdValue,
       update,
+      handleChange,
       ...userInfoRefs,
     }
   },
